@@ -8,7 +8,7 @@ class TrackFace:
         self.greenRange = [6400, 6800]
         self.pidPar = [0.4, 0.4, 0]
         self.preError = 0
-        self.face_cascade = cv2.CascadeClassifier(r"Resources\haarcascade_frontalface_default.xml")
+        self.face_cascade = cv2.CascadeClassifier(r"Resources/haarcascade_frontalface_default.xml")
 
     def findFace(self, img):
         img = cv2.resize(img, (self.width, self.height))
