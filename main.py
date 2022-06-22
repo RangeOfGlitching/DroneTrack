@@ -9,12 +9,12 @@ tr = tc.TrackFace()
 try:
     while True:
         ret, bg_removed = dc.get_frame()
-        # distance = depth_frame[point[1], point[0]] / 1000
         frame, info, face = tr.findFace(bg_removed)
+        print(f"face: {face} size{info[1]}")
         fbSpeed, yaw_speed, tr.preError = tr.track(info, face)
-        error = cv2.imshow("color frame", frame)
-
-        if cv2.waitKey(1) == ord("q"):
-            break
+        # error = cv2.imshow("color frame", frame)
+        #
+        # if cv2.waitKey(1) == ord("q"):
+        #     break
 finally:
     dc.release()
