@@ -12,6 +12,7 @@ class TrackFace:
 
     def findFace(self, img):
         img = cv2.resize(img, (self.width, self.height))
+        img = cv2.rotate(img, cv2.ROTATE_180)
         # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         faces = self.face_cascade.detectMultiScale(img, scaleFactor=1.2, minNeighbors=8)
         myFaceListCenter = []
