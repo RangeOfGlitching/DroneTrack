@@ -7,12 +7,13 @@ class TrackFace:
         self.height = h
         self.greenRange = [6400, 6800]
         self.pidPar = [0.4, 0.4, 0]
-        self.preError = 0
+        self.preErrorX = 0
+        self.preErrorY = 0
         self.face_cascade = cv2.CascadeClassifier(r"Resources/haarcascade_frontalface_default.xml")
 
     def findFace(self, img):
         img = cv2.resize(img, (self.width, self.height))
-        img = cv2.rotate(img, cv2.ROTATE_180)
+        # img = cv2.rotate(img, cv2.ROTATE_180)
         # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         faces = self.face_cascade.detectMultiScale(img, scaleFactor=1.2, minNeighbors=8)
         myFaceListCenter = []
@@ -40,22 +41,26 @@ class TrackFace:
             fb = 0
             area = info[1]
             x, y = info[0]
-            error = x - self.width // 2
+            errorX = x - self.width // 2
+            errorY = self.height // 2 - y
 
-            yaw_speed = self.pidPar[0] * error + self.pidPar[1] * (error - self.preError)
+            yaw_speed = self.pidPar[0] * errorX + self.pidPar[1] * (errorX - self.preErrorX)
+            ud_speed = self.pidPar[0] * errorY + self.pidPar[1] * (errorY - self.preErrorY)
             yaw_speed = int(np.clip(yaw_speed, -100, 100))
+            ud_speed = int(np.clip(ud_speed, -100, 100))
             if self.greenRange[0] < area < self.greenRange[1]:
                 fb = 0
             elif area > self.greenRange[1]:
                 fb = -20
             elif area < self.greenRange[0]:
                 fb = 20
-            print(area)
-            return fb, yaw_speed, error
+            print(f"x: {x} y: {y} errorX: {errorX} errorY: {errorY} yaw_speed: {yaw_speed} ud_speed: {ud_speed} fb: {fb} area: {area}")
+            return fb, yaw_speed, errorX, errorY
         else:
             fb = 0
             yaw_speed = 0
-            error = 0
-            return fb, yaw_speed, error
+            errorX = 0
+            errorY = 0
+            return fb, yaw_speed, errorX, errorY
 
 
